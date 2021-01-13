@@ -80,7 +80,7 @@ var ker = lin_ker;
 function restrict_t(t, v0, u) {
 	var clip = x => x < 0 ? 0.0 : (x > C ? C : x);
 	t = (clip(v0[1] + t * u[1]) - v0[1]) / u[1];
-	t = (clip(v0[1] + t * u[1]) - v0[1]) / u[1];
+	t = (clip(v0[0] + t * u[0]) - v0[0]) / u[0];
 	return t;
 }
 function get_K_matrix() {
