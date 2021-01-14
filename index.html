@@ -59,9 +59,9 @@
 //    return np.sum(self.kernel(X, self.X) * self.y * self.lambdas, axis=1) + self.b
 
 var max_iter = 100;
-var C = 10.0;
+var C = 100.0;
 var degree = 3;
-var gamma  = 1;
+var gamma  = 5;
 var poly_ker = function(x, y) {
 	return (x[0] * y[0] + x[1] * y[1])**degree;
 }
@@ -169,6 +169,22 @@ function loss_function_2d() {
   });
 
 
+var support_x = [];
+var support_y = [];
+  for (var i = 0; i < points.length; ++i) {
+    if (lambdas[i] > 1E-5) {
+      support_x.push(points[i][0]);
+      support_y.push(points[i][1]);
+    }
+  }
+  data.push({
+        x: support_x, y: support_y,
+        showscale: false, opacity: 1.0, type: 'scatter', mode: 'markers',
+        name: 'support vectors',
+        marker: {size: 3, color: 'yellow'},
+  });
+
+
 
 for (var i = 0; i < ys.length; ++i) {
 	for (var j = 0; j < xs.length; ++j) {
@@ -176,7 +192,7 @@ for (var i = 0; i < ys.length; ++i) {
 		for (var k = 0; k < lambdas.length; ++k)
 			zs[i][j] += lambdas[k] * (2.0 * points[k][2] - 1) * ker(points[k], [xs[j], ys[i]]);
 		zs[i][j] += b;
-		zs[i][j] = 1 / (1 + Math.exp(-zs[i][j]));
+		//zs[i][j] = 1 / (1 + Math.exp(-zs[i][j]));
 		//if (zs[i][j] > 0)
 		//	zs[i][j] = 1.0;
 		//else
@@ -189,18 +205,7 @@ var colorscaleValue = [
   [0, '#3D0000'],
   [1, '#00003D']
 ];
-/*
-data.push({
-  x: xs,
-  y: ys,
-  z: zs,
-  type: 'heatmap',
-  colorscale: colorscaleValue,
-  showscale: false,
-  zsmooth: 'best'
-});
-*/
-//console.log(zs);
+
 data.push({
   x: xs,
   y: ys,
@@ -208,23 +213,21 @@ data.push({
   type: 'contour',
   colorscale: colorscaleValue,
   showscale: false,
-  contours: {start: 0.0, end: 1.0, size: 0.5},
+  contours: {start: 0.0, end: 0.0, size: 3.0},
   line: {width: 2, color: 'black'},
-  //zsmooth: 'best'
-});/*
+});
 data.push({
   x: xs,
   y: ys,
   z: zs,
   type: 'contour',
-  //colorscale: colorscaleValue,
   showscale: false,
-  contours: {start: 1 / (1 + Math.exp(1)), end: 1 / (1 + Math.exp(-1)), size: 0.33, coloring: 'none'},
+  contours: {start: -1.0, end: 1.0, size: 1.0, coloring: 'none'},
   line: {
-    width: 2,
+    width: 1,
     color: 'black'
   },
-});*/
+});
 
 
 
@@ -354,6 +357,26 @@ function clear_field() {
   loss_function_2d();
 }
 
+function C_change(val) {
+  var l = document.getElementById('c_val');
+  l.innerHTML = val;
+  C = 10**val;
+  loss_function_2d();
+}
+
+function ker_change(val) {
+  if (val == 'linear') {
+    ker = lin_ker;
+  }
+  if (val == 'poly') {
+    ker = poly_ker;
+  }
+  if (val == 'rbf') {
+    ker = rbf_ker;
+  }
+  loss_function_2d();
+}
+
   </script>
 
 
@@ -373,7 +396,15 @@ function clear_field() {
     <input type="radio" id="root_move" name="root_node" onchange="move_pts(); loss_function_2d(); ">
     <label for="root_move">Move data point</label><br>
     <input type="radio" id="root_del" name="root_node" onchange="del_pts(); loss_function_2d(); ">
-    <label for="root_del">Delete data point</label></td>
+    <label for="root_del">Delete data point</label><br>
+    <input type="range" min="-3" max="5" value="1" oninput="C_change(this.value)">
+    <label>C = 10<sup id="c_val">1</sup></label><br>
+    Kernel:
+    <select id="select_kernel" onchange="ker_change(this.value)">
+       <option value="linear">Linear</option>
+       <option value="poly">Polynomial</option>
+       <option value="rbf">Radial Basis Functions</option>
+    </select>
 </div>
 </div>
 
