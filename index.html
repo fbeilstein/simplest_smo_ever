@@ -367,14 +367,31 @@ function C_change(val) {
 function ker_change(val) {
   if (val == 'linear') {
     ker = lin_ker;
+    document.getElementById('gamma').style = 'display: none';
+    document.getElementById('polyn').style = 'display: none';
   }
   if (val == 'poly') {
     ker = poly_ker;
+    document.getElementById('gamma').style = 'display: none';
+    document.getElementById('polyn').style = 'display: block';
   }
   if (val == 'rbf') {
     ker = rbf_ker;
+    document.getElementById('gamma').style = 'display: block';
+    document.getElementById('polyn').style = 'display: none';
   }
   loss_function_2d();
+}
+
+function gamma_change(val) {
+  gamma = val / 2.0 + 0.5;
+  document.getElementById('glabel').innerHTML = gamma.toFixed(1);
+  loss_function_2d();
+}
+function n_change(val) {
+  degree = val;
+  document.getElementById('nlabel').innerHTML = degree;
+  loss_function_2d(); 
 }
 
   </script>
@@ -390,7 +407,7 @@ function ker_change(val) {
   </div>
 <div id="for_left_plot" style="position:absolute; top:50px; left:800px" > 
     <input type="radio" id="root_add_red" name="root_node" checked="checked" onchange="add_pts(0); loss_function_2d(); ">
-    <label for="root_add_red">Add data point</label><br>
+    <label for="root_add_red">Add red data point</label><br>
     <input type="radio" id="root_add_blue" name="root_node" onchange="add_pts(1); loss_function_2d(); ">
     <label for="root_add_blue">Add blue data point</label><br>
     <input type="radio" id="root_move" name="root_node" onchange="move_pts(); loss_function_2d(); ">
@@ -405,7 +422,14 @@ function ker_change(val) {
        <option value="poly">Polynomial</option>
        <option value="rbf">Radial Basis Functions</option>
     </select><br>
-    <div id=''>
+    <div id='gamma' style='display: none'>
+    <input type="range" min="0" max="10" value="5" oninput="gamma_change(this.value)">
+    gamma = <label id='glabel'>3.0</label><br>
+    </div>
+    <div id='polyn' style='display: none'>
+    <input type="range" min="2" max="7" value="3" oninput="n_change(this.value)">
+    n = <label id='nlabel'>3</label><br>
+    </div>
 </div>
 </div>
 
