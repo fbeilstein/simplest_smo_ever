@@ -172,7 +172,7 @@ function loss_function_2d() {
 var support_x = [];
 var support_y = [];
   for (var i = 0; i < points.length; ++i) {
-    if (lambdas[i] > 1E-5) {
+    if (lambdas[i] > 1E-10) {
       support_x.push(points[i][0]);
       support_y.push(points[i][1]);
     }
