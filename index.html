@@ -414,7 +414,7 @@ function n_change(val) {
     <label for="root_move">Move data point</label><br>
     <input type="radio" id="root_del" name="root_node" onchange="del_pts(); loss_function_2d(); ">
     <label for="root_del">Delete data point</label><br>
-    <input type="range" min="-30" max="50" value="1" oninput="C_change(this.value)">
+    <input type="range" min="-30" max="50" value="10" oninput="C_change(this.value)">
     <label>C = 10<sup id="c_val">1</sup></label><br>
     Kernel:
     <select id="select_kernel" onchange="ker_change(this.value)">
